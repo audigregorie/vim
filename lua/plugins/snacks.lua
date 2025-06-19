@@ -4,6 +4,7 @@ return {
     { "<leader>e", false },
   },
   opts = {
+    -- indent = { enabled = false },
     dashboard = {
       preset = {
         header = [[

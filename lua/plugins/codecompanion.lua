@@ -1,9 +1,11 @@
 return {
+  -- Fidget (LSP progress UI)
   {
     "j-hui/fidget.nvim",
     opts = {},
   },
 
+  -- MCPHub Integration (provides tool access via CodeCompanion)
   {
     "ravitemer/mcphub.nvim",
     build = "npm install -g mcp-hub@latest",
@@ -20,6 +22,7 @@ return {
     end,
   },
 
+  -- Markview for Markdown/CodeCompanion previews
   {
     "OXY2DEV/markview.nvim",
     lazy = false,
@@ -31,17 +34,17 @@ return {
     },
   },
 
+  -- Inline diff visualization (like Cursor's diffing)
   {
     "echasnovski/mini.diff",
     config = function()
-      local diff = require("mini.diff")
-      diff.setup({
-        -- Disabled by default
-        source = diff.gen_source.none(),
+      require("mini.diff").setup({
+        source = require("mini.diff").gen_source.none(),
       })
     end,
   },
 
+  -- Clipboard image pasting into markdown/codecompanion
   {
     "HakonHarnes/img-clip.nvim",
     opts = {
@@ -55,6 +58,7 @@ return {
     },
   },
 
+  -- 🧠 CodeCompanion Main Plugin (AI Integration)
   {
     "olimorris/codecompanion.nvim",
     opts = {},
@@ -62,18 +66,22 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "banjo/contextfiles.nvim",
+      "MunifTanjim/nui.nvim",
       "supermaven-inc/supermaven-nvim",
     },
 
     config = function()
       require("codecompanion").setup({
+        show_diff = true,
+        accept_keymap = "<C-Enter>", -- keymap to accept suggestions
+        reject_keymap = "<C-BS>", -- keymap to reject
         strategies = {
           chat = {
             adapter = "anthropic",
           },
           inline = {
-            -- adapter = "copilot",
-            adapter = "supermaven",
+            adapter = "anthropic",
+            -- adapter = "supermaven",
           },
           cmd = {
             adapter = "deepseek",
@@ -99,8 +107,9 @@ return {
           },
           contextfiles = {
             opts = {
-              -- your contextfiles configuration here
-              -- or leave it empty to use the default configuration
+              include = { "*.lua", "*.ts", "*.tsx", "*.py", "*.js" },
+              exclude_dirs = { "node_modules", ".git" },
+              max_lines = 2000,
             },
           },
         },
@@ -141,6 +150,9 @@ return {
       -- })
 
       vim.keymap.set("n", "<leader>ac", ":CodeCompanionChat Toggle<CR>", { desc = "Toggle CodeCompanion" })
+      vim.keymap.set("n", "<leader>aa", ":CodeCompanionInline<CR>", { desc = "AI Suggest (Inline)" })
+      vim.keymap.set("v", "<leader>ae", ":CodeCompanionEdit<CR>", { desc = "AI Edit selection" })
+      vim.keymap.set("n", "<leader>ad", ":CodeCompanionDiff<CR>", { desc = "Show AI Diff" })
     end,
   },
 }
